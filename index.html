@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heart Animation</title>
-    <!-- Load Brython to run Python in the browser -->
-    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.6/brython.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.6/brython_stdlib.js"></script>
     <style>
         body {
             margin: 0;
@@ -22,44 +19,40 @@
         }
     </style>
 </head>
-<body onload="brython()">
+<body>
 
-    <canvas id="turtle-canvas" width="800" height="800"></canvas>
+    <canvas id="heart-canvas" width="600" height="600"></canvas>
 
-    <script type="text/python">
-        import browser
-        import turtle
-        import math
-        import random
+    <script>
+        const canvas = document.getElementById("heart-canvas");
+        const ctx = canvas.getContext("2d");
 
-        turtle.set_canvas(browser.document["turtle-canvas"])
+        ctx.translate(canvas.width / 2, canvas.height / 2);
 
-        screen = turtle.Screen()
-        screen.bgcolor('black')
+        const colors = ["red", "blue", "lime", "yellow", "cyan", "magenta", "orange", "pink"];
+        let i = 0;
 
-        t = turtle.Turtle()
-        t.speed(0)
-        t.hideturtle()
-        t.pensize(1)
+        function drawHeart() {
+            if (i >= 120) return;
 
-        colors = ["red", "blue", "lime", "yellow", "cyan", "magenta", "orange", "pink"]
+            let angle = i * (Math.PI * 2) / 120;
+            let x = 16 * Math.pow(Math.sin(angle), 3) * 15;
+            let y = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) * 15;
 
-        for i in range(120):
-            t.penup()
-            t.goto(0, 40)
-            angle = i * (math.pi * 2) / 120
-            x = 16 * (math.sin(angle) ** 3) * 15
-            y = (13 * math.cos(angle) - 5 * math.cos(2 * angle) - 2 * math.cos(3 * angle) - math.cos(4 * angle)) * 15
-            c = random.choice(colors)
-            t.color(c)
-            t.pendown()
-            t.goto(x, y)
-            for _ in range(8):
-                t.forward(6)
-                t.backward(6)
-                t.right(45)
+            let c = colors[Math.floor(Math.random() * colors.length)];
+            ctx.strokeStyle = c;
+            ctx.lineWidth = 2;
 
-        turtle.done()
+            ctx.beginPath();
+            ctx.moveTo(0, -40);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            i++;
+            setTimeout(drawHeart, 50);
+        }
+
+        drawHeart();
     </script>
 
 </body>
